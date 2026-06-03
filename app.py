@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from joblib import load
+from pickle import load
 import numpy as np
 import pandas as pd
 
@@ -7,10 +7,14 @@ import pandas as pd
 app = Flask(__name__)
 
 # Load Model, Scaler dan Encoder
-model = load("random_forest.joblib")
-scaler = load("scaler.joblib")
-gender_encoder = load("Gender_encoder.joblib")
-geo_encoder = load("Geography_encoder.joblib")
+with open("random_forest.pkl", "rb") as file :
+    model = load(file)
+with open("scaler.pkl", "rb") as file :
+    scaler = load(file)
+with open("Gender_encoder.pkl", "rb") as file :
+    gender_encoder = load(file)
+with open("Geography_encoder.pkl", "rb") as file :
+    geo_encoder = load(file)
 
 
 # Kolom yang dibutuhkan Untuk Prediksi (Harus Berurutan)
@@ -18,6 +22,11 @@ feature_order = [
     'CreditScore', 'Geography', 'Gender', 'Age', 'Tenure', 'Balance',
     'NumOfProducts', 'HasCrCard', 'IsActiveMember', 'EstimatedSalary'
 ]
+
+@app.route('/')
+def home():
+    return {"status":"SUCCESS",
+            "message":"Hai"},200
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -88,4 +97,4 @@ def predict():
         })
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
+    app.run(debug=True)
