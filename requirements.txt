@@ -1,4 +1,4 @@
 flask
-joblib
+pickle
 pandas
 scikit-learn
